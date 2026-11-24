@@ -57,8 +57,13 @@ def main():
     os.chmod(path, 0o644)
     with open(path, "rb") as fh:
         data = fh.read()
-    if data.decode("utf-8") != TEXT:
+    text_back = data.decode("utf-8")
+    if text_back != TEXT:
         print("read-back mismatch", file=sys.stderr)
+        return 1
+    problem = gate(text_back)
+    if problem is not None:
+        print("gate failed on read-back: %s" % problem, file=sys.stderr)
         return 1
     print("wrote %s (%d characters, 2 lines)" % (path, len(TEXT)))
     return 0
